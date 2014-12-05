@@ -14,6 +14,8 @@ int Agent::search(state &s, int depth, int alpha, int beta, int sMax, int sMin, 
 
 	if ( depth == 0 ) return (sMax - sMin);
 
+	int opponent = (curPlayer == BLACK) ? WHITE : BLACK;
+
 	int i, j, x, y, a, b;
 	int v, tmp;
 
@@ -31,7 +33,7 @@ int Agent::search(state &s, int depth, int alpha, int beta, int sMax, int sMin, 
 
 				s.map[i][j] = curPlayer;
 				tmp = score(s, i, j);
-				v = search(s, depth-1, alpha, beta, tmp+sMax, sMin, -curPlayer, a, b);
+				v = search(s, depth-1, alpha, beta, tmp+sMax, sMin, opponent, a, b);
 				s.map[i][j] = EMPTY;
 				if ( v > alpha )
 				{
@@ -55,7 +57,7 @@ int Agent::search(state &s, int depth, int alpha, int beta, int sMax, int sMin, 
 
 				s.map[i][j] = curPlayer;
 				tmp = score(s, i, j);
-				v = search(s, depth-1, alpha, beta, sMax, tmp+sMin, -curPlayer, a, b);
+				v = search(s, depth-1, alpha, beta, sMax, tmp+sMin, opponent, a, b);
 				s.map[i][j] = EMPTY;
 				if ( v < beta ) beta = v;
 				
@@ -68,9 +70,17 @@ int Agent::search(state &s, int depth, int alpha, int beta, int sMax, int sMin, 
 
 int Agent::move(state& board, int &X, int &Y)
 {
+	gettimeofday(&start, NULL);
 	int sb = score(board, BLACK);
 	int sw = score(board, WHITE);
 
-	return search(board, thinkingDepth, -INF, INF, sb, sw, player, X, Y);
+	int value = search(board, thinkingDepth, -INF, INF, sb, sw, player, X, Y);
+	gettimeofday(&end, NULL);
+
+	return value;
 }
 
+long long Agent::getThinkingTime()
+{
+	return (((long long)end.tv_sec*1000000+end.tv_usec)-((long long)start.tv_sec*1000000+start.tv_usec)) / 1000;
+}

@@ -3,6 +3,7 @@
 
 #include "defs.h"
 #include "player.h"
+#include <sys/time.h>
 
 /** AI Meta Square player */
 class Agent : public Player
@@ -17,8 +18,10 @@ class Agent : public Player
 		/** Processes an AI move */
 		virtual int move(state& board, int &X, int &Y);
 
+		long long getThinkingTime();
 	private:
 		int thinkingDepth;
+		struct timeval start, end;
 
 		/** alpha-beta search routine
 		 *  @param s Current state

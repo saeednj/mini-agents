@@ -1,4 +1,4 @@
-SRCS=main.cpp meta.cpp util.cpp
+SRCS=main.cpp meta.cpp util.cpp user.cpp
 OBJS=$(SRCS:.cpp=.o)
 
 

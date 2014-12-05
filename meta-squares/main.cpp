@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/time.h>
 #include "meta.h"
 #include "util.h"
+#include "user.h"
 
 int main()
 {
 	state board;
-	struct timeval start, end;
 	int cnt = 64;
 
+	/* Preparing a clear board */
 	for( int i=0; i<SIZE; i++ )
 		for( int j=0; j<SIZE; j++ )
 			board.map[i][j] = EMPTY;
@@ -17,8 +17,8 @@ int main()
 	int sw = 0, sb = 0;
 	char first[2];
 
-	Agent black(BLACK, 4);
-	Agent white(WHITE, 4);
+	Agent comp(BLACK, 4);
+	User human(WHITE);
 
 	int player = BLACK;
 
@@ -26,22 +26,21 @@ int main()
 
 	for(;;)
 	{
+		long long thinkingTime; 
 		if ( player == BLACK )
 		{
-			gettimeofday(&start, NULL);
-			black.move(board, x, y);
-			gettimeofday(&end, NULL);
+			comp.move(board, x, y);
+			thinkingTime = comp.getThinkingTime();
 		}
 		else
 		{
-			gettimeofday(&start, NULL);
-			white.move(board, x, y);
-			gettimeofday(&end, NULL);
+			human.move(board, x, y);
 		}
 		board.map[x][y] = player;
 		show(board);
 		printf("%s's move: %02d\n", ( player == BLACK ? "BLACK" : "WHITE"), (x+1)*10+y+1);
-		printf(" thinking time = %lld ms\n", (((long long)end.tv_sec*1000000+end.tv_usec)-((long long)start.tv_sec*1000000+start.tv_usec))/1000);
+		if ( player == BLACK )
+			printf(" thinking time = %lld ms\n", thinkingTime);
 
 		player = (player == BLACK) ? WHITE : BLACK;
 
