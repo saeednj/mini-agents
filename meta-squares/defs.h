@@ -12,6 +12,7 @@
 #define INF 2000000000
 
 #define inRange(x, y) ((x)>=0 && (x)<SIZE && (y)>=0 && (y)<SIZE)
+#define toString(player) ((player) == BLACK ? "BLACK" : "WHITE")
 
 struct state
 {

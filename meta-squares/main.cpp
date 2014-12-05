@@ -17,32 +17,28 @@ int main()
 	int sw = 0, sb = 0;
 	char first[2];
 
-	Agent comp(BLACK, 4);
-	User human(WHITE);
+	Player *player[2];
 
-	int player = BLACK;
+	player[0] = new Agent(BLACK, 4);
+	player[1] = new User(WHITE);
 
-	int x, y;
+	int pid = 0;
 
 	for(;;)
 	{
+		int x, y;
 		long long thinkingTime; 
-		if ( player == BLACK )
-		{
-			comp.move(board, x, y);
-			thinkingTime = comp.getThinkingTime();
-		}
-		else
-		{
-			human.move(board, x, y);
-		}
-		board.map[x][y] = player;
-		show(board);
-		printf("%s's move: %02d\n", ( player == BLACK ? "BLACK" : "WHITE"), (x+1)*10+y+1);
-		if ( player == BLACK )
-			printf(" thinking time = %lld ms\n", thinkingTime);
 
-		player = (player == BLACK) ? WHITE : BLACK;
+		player[pid]->move(board, x, y);
+		thinkingTime = player[pid]->getThinkingTime();
+
+		board.map[x][y] = player[pid]->getPlayer();
+		show(board);
+		printf("%s's move: %02d\n", toString(player[pid]->getPlayer()), (x+1)*10+y+1);
+		if ( thinkingTime != -1 )
+			printf("thinking time = %lld ms\n", thinkingTime);
+
+		pid = 1 - pid;
 
 		sb = score(board, BLACK);
 		sw = score(board, WHITE);
